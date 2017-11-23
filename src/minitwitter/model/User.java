@@ -18,7 +18,7 @@ public class User implements IObserver, IUserComponent, IUserVisitable {
     private List<String> newsFeed;
     private long creationTime;
     private long lastUpdated;
-    protected static Map<Long, String> allLastUpdates =  new HashMap();;
+    private static Map<Long, String> allLastUpdates =  new HashMap();;
 
     public User(String id) {
         this.creationTime = System.currentTimeMillis();
@@ -44,7 +44,6 @@ public class User implements IObserver, IUserComponent, IUserVisitable {
     
     public void addUserTimeUpdate(){
         this.allLastUpdates.put(this.lastUpdated, this.id);
-        System.out.println(this.allLastUpdates);
     }
 
     public Map<Long, String> getAllUsersTimes() {
