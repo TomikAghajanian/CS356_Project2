@@ -5,11 +5,14 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,14 +27,21 @@ public class UserView extends JFrame {
     private UserGroup rootGroup;
     private JList<String> followingList;
     private JList<String> newsFeedList;
+    private SimpleDateFormat sdf;
+    private Date resultdate;
+    private Date lastUpdate;
+    private JLabel lastUpdateLabel;
 
     public UserView(User user, UserGroup rootGroup) {
+        this.user = user;
+        this.rootGroup = rootGroup;
+
+        resultdate = new Date(user.getCreationTime());
+        lastUpdate = new Date(user.getLastUpdatedTime());
+
         this.setTitle(user.getUserId() + " - MiniTwitter");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new FlowLayout());
-
-        this.user = user;
-        this.rootGroup = rootGroup;
 
         init_View();
         updateNewsFeedListView();
@@ -58,6 +68,18 @@ public class UserView extends JFrame {
         c.gridy = 0;
         panel.add(userId, c);
 
+        JLabel creationTimeLabel = new JLabel("Created on: " + this.resultdate.toString());
+        userId.setPreferredSize(new Dimension(175, 26));
+        c.gridx = 0;
+        c.gridy = 4;
+        panel.add(creationTimeLabel, c);
+
+        lastUpdateLabel = new JLabel();
+        lastUpdateLabel.setPreferredSize(new Dimension(300, 26));
+        c.gridx = 0;
+        c.gridy = 5;
+        panel.add(lastUpdateLabel, c);
+
         JButton btn_followUser = new JButton("Follow User");
         btn_followUser.setPreferredSize(new Dimension(175, 26));
         btn_followUser.addActionListener((ActionEvent) -> {
@@ -71,7 +93,7 @@ public class UserView extends JFrame {
         c.gridx = 1;
         c.gridy = 0;
         panel.add(btn_followUser, c);
-        
+
         followingList = new JList<String>();
         JScrollPane scroll = new JScrollPane(followingList);
 
@@ -122,8 +144,10 @@ public class UserView extends JFrame {
     }
 
     public void updateNewsFeedListView() {
+        this.user.setLastUpdatedTime();
+        this.lastUpdateLabel.setText("Last Update: " +new Date(this.user.getLastUpdatedTime()).toString());
         DefaultListModel<String> model = new DefaultListModel<String>();
-
+        model.addElement("last update: " + new Date(System.currentTimeMillis()).toString());
         for (String tweet : user.getNewsFeed()) {
             model.addElement(tweet);
         }

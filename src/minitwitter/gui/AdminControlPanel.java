@@ -93,6 +93,7 @@ public class AdminControlPanel extends JFrame {
         btn_UserId.addActionListener((ActionEvent) -> {
             updateTree(new User(userId.getText()), (UserGroup) rootGroup.getUser(selectedGroup, rootGroup));
         });
+
         c.gridx = 2;
         c.gridy = 0;
         panel.add(btn_UserId, c);
@@ -101,6 +102,24 @@ public class AdminControlPanel extends JFrame {
         c.gridx = 1;
         c.gridy = 1;
         panel.add(groupId, c);
+
+        JButton btn_Validate = new JButton("Validate User/GroupID");
+        btn_Validate.addActionListener((ActionEvent) -> {
+            JOptionPane.showMessageDialog(this, "Valid user/GroupIDs: "
+                    + getVisitor().validate(rootGroup));
+        });
+        c.gridx = 2;
+        c.gridy = 3;
+        panel.add(btn_Validate, c);
+
+        JButton btn_LastUpdateTime = new JButton("Last Update Time User");
+        btn_LastUpdateTime.addActionListener((ActionEvent) -> {
+            JOptionPane.showMessageDialog(this, "Last Update Time User: "
+                    + getVisitor().lastUpdateTimeUser(rootGroup));
+        });
+        c.gridx = 1;
+        c.gridy = 3;
+        panel.add(btn_LastUpdateTime, c);
 
         JButton btn_GroupId = new JButton("Add Group");
         btn_GroupId.addActionListener((ActionEvent) -> {
@@ -174,7 +193,7 @@ public class AdminControlPanel extends JFrame {
 
         return visitor;
     }
-    
+
     public static AdminControlPanel getInstance() {
         if (instance == null) {
             instance = new AdminControlPanel();

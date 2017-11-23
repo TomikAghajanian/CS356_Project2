@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -15,14 +16,41 @@ public class User implements IObserver, IUserComponent, IUserVisitable {
     private Map<String, IObserver> followers;
     private Map<String, IObserver> followings;
     private List<String> newsFeed;
+    private long creationTime;
+    private long lastUpdated;
+    protected static Map<Long, String> allLastUpdates =  new HashMap();;
 
     public User(String id) {
+        this.creationTime = System.currentTimeMillis();
+        this.lastUpdated = -1;
         this.id = id;
+        
         followers = new HashMap<String, IObserver>();
         followings = new HashMap<String, IObserver>();
         newsFeed = new ArrayList<String>();
     }
+
+    public long getCreationTime() {
+        return this.creationTime;
+    }
+
+    public long getLastUpdatedTime() {
+        return this.lastUpdated;
+    }
+
+    public void setLastUpdatedTime() {
+        this.lastUpdated = System.currentTimeMillis();
+    }
     
+    public void addUserTimeUpdate(){
+        this.allLastUpdates.put(this.lastUpdated, this.id);
+        System.out.println(this.allLastUpdates);
+    }
+
+    public Map<Long, String> getAllUsersTimes() {
+        return this.allLastUpdates;
+    }
+
     public void updateFollowersList(User user) {
         if (!followers.containsKey(user.getUserId())) {
             followers.put(user.getUserId(), user);
@@ -33,13 +61,14 @@ public class User implements IObserver, IUserComponent, IUserVisitable {
         if (followedUser.getUserId().equals(id)) {
             return;
         }
-
         followings.put(followedUser.getUserId(), followedUser);
         followedUser.updateFollowersList(this);
     }
 
     public void postTweet(String tweet) {
         newsFeed.add(id + ": " + tweet);
+        setLastUpdatedTime();
+        addUserTimeUpdate();
         notifyObservers(id);
     }
 
@@ -67,7 +96,7 @@ public class User implements IObserver, IUserComponent, IUserVisitable {
             view.setVisible(true);
         }
     }
-    
+
     public void notifyObservers(String userId) {
         for (Map.Entry<String, IObserver> observer : followers.entrySet()) {
             User user = (User) observer.getValue();

@@ -2,21 +2,27 @@ package minitwitter.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class UserGroup extends User implements IUserComponent, IUserVisitable {
 
     private Map<String, User> users;
+    
+    public Map<String, User> getAllUsers(){
+        return this.users;
+    }
 
     public UserGroup(String id) {
         super(id);
         users = new HashMap<String, User>();
     }
     
+    
     public void addUser(User user, UserGroup rootGroup) {
         String id = user.getUserId();
-
+        
         if (!userExists(id, rootGroup)) {
             users.put(id, user);
         } else {

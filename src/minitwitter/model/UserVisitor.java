@@ -1,5 +1,9 @@
 package minitwitter.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class UserVisitor implements IUserVisitor {
@@ -44,6 +48,27 @@ public class UserVisitor implements IUserVisitor {
                 }
             }
         }
+    }
+
+    public String validate(UserGroup userGroup) {
+        Map<String, User> users = userGroup.getAllUsers();
+        System.out.println("from Validate all users: " + userGroup.getAllUsers());
+        System.out.println("from Validate last update: " + userGroup.getAllUsersTimes());
+        List keys = new ArrayList(users.keySet());
+        System.out.println(users.keySet());
+        for (int i = 0; i < keys.size(); i++ ){
+            if (((String)keys.get(i)).contains(" ")) {
+                return "Invalid";
+            }
+        }
+        return "Valid";
+    }
+    
+    public String lastUpdateTimeUser(UserGroup group) {
+        List keys = new ArrayList(group.getAllUsersTimes().keySet());        
+        Collections.sort(keys);
+               
+        return group.getAllUsersTimes().get(keys.get(keys.size()-1));
     }
 
     public int getNumberOfUsers() {
